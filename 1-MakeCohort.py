@@ -8,6 +8,8 @@ from Processing.Clean import clean_vitals
 from Processing.Serialisation import jsonDump
 from Processing.Settings import path
 
+import sklearn
+
 # 1. Creat the cohort
 cohort_data = pd.read_csv(path+"outcomes.csv")
 cohort_data = clean_outcomes(cohort_data)
