@@ -52,13 +52,15 @@ def main():
 
     new_time_series[["PatientID"]] = "p_"+new_time_series[["PatientID"]].astype(str)
 
-    int_columns = [ "Day", "Hour", 'ITUAdmission', "Mortality", "SxToAdmit","OrdinalHour", "FourHourIndex"]
+    int_columns = [ "Day", "Hour", 'ITUAdmission', "Age", "Mortality","Mortality30Days", "SxToAdmit","OrdinalHour", "FourHourIndex"]
     new_time_series[int_columns] = new_time_series[int_columns].astype(int)
 
     na_columns = set(new_time_series.columns) - set(int_columns)
     na_columns = na_columns - set(['PatientID'])
 
     float_columns = new_time_series.columns[7:]
+    print(" int columns: ", int_columns)
+    print(" float columns: ", float_columns)
 
     new_time_series[float_columns] = new_time_series[float_columns].astype(float)
 

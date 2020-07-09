@@ -46,10 +46,7 @@ def main():
     time_series = pd.read_csv(path+"TimeSeriesAggregated.csv")
 
     pd.options.mode.chained_assignment = None
-    x, y = InputData()
 
-    print(x.columns)
-    print(y.head())
     xgbm=xgb.XGBClassifier(scale_pos_weight=263/73,
                            learning_rate=0.007,
                            n_estimators=100,
@@ -63,7 +60,7 @@ def main():
     lrm=LogisticRegression(solver='lbfgs')
 
 
-    #ExperimentI(x,y,xgbm,rfm,lrm)
+    ExperimentI(time_series,xgbm)
     #ExperimentII(x,y,xgbm,rfm,lrm)
     #ExperimentIII(x,y,rfm,lrm)
     #ExperimentIV(x,y,xgbm,rfm,lrm)
