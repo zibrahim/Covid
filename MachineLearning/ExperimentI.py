@@ -1,25 +1,31 @@
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-import seaborn as sns
-import matplotlib.pyplot as plt
-import xgboost as xgb
-from xgboost import plot_importance, plot_tree
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+import pandas as pd
+import numpy as np
 from sklearn.model_selection import GroupKFold
 
 from Processing.Settings import path
-plt.style.use('fivethirtyeight')
+from MachineLearning.ExperimentalDesign import stratified_group_k_fold, get_distribution
 
-aggrData = pd.read_csv(path+"TimeSeriesAggregated.csv", index_col=[0], parse_dates=[0])
+class ExperimentI:
+    def __init__(self,time_series, dynamic_features):
 
-plot_data = aggrData[['PatientID','PO2/FIO2']]
-color_pal = ["#F8766D", "#D39200", "#93AA00", "#00BA38", "#00C19F", "#00B9E3", "#619CFF", "#DB72FB"]
-_ = aggrData.plot(style='.', figsize=(15,5), color=color_pal[0], title='PJM East')
+        groups = groups = np.array(time_series['PatientID'])
+        y = time_series['Mortality']
+        X = time_series[dynamic_features]
 
+        distrs = [get_distribution(y)]
+        index = ['training set']
 
-X = [0.1, 0.2, 2.2, 2.4, 2.3, 4.55, 5.8, 8.8, 9, 10]
-y = ["a", "b", "b", "b", "c", "c", "c", "d", "d", "d"]
-groups = [1, 1, 1, 2, 2, 2, 3, 3, 3, 3]
+        for fold_ind, (dev_ind, val_ind) in enumerate(stratified_group_k_fold(X, y, groups, k=5)) :
+            dev_y, val_y = y[dev_ind], y[val_ind]
+            dev_groups, val_groups = groups[dev_ind], groups[val_ind]
 
-gkf = GroupKFold(n_splits=3)
-for train, test in gkf.split(X, y, groups=groups):
-    print("%s %s" % (train, test))
+            assert len(set(dev_groups) & set(val_groups)) == 0
+
+            distrs.append(get_distribution(dev_y))
+            index.append(f'development set - fold {fold_ind}')
+            distrs.append(get_distribution(val_y))
+            index.append(f'validation set - fold {fold_ind}')
+
+        print('Distribution per class:')
+        x = pd.DataFrame(distrs, index=index, columns=[f'Label {l}' for l in range(np.max(y) + 1)])
+        x.to_csv("distributions.csv", index=False)

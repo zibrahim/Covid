@@ -2,7 +2,7 @@ from Cohort.Cohort import Cohort
 from Cohort.Patient import Patient
 from Cohort.Observation import Observation
 from Processing.Helpers import getDayWrapper, getHourWrapper
-from Processing.Settings import path
+from Processing.Settings import data_path
 import json
 import numpy as np
 from datetime import datetime, timedelta
@@ -138,5 +138,5 @@ def makeTimeSeries( cohort ):
 
                 PatientDF.loc[(PatientDF.Day == ob_day) & (PatientDF.OrdinalHour == ob_hour), ob_name] = ob_value
             TimeSeriesDF = TimeSeriesDF.append((PatientDF))
-        TimeSeriesDF.to_csv(path+"TimeSeries.csv", index=False)
-        observation_df.to_csv(path+"obs.csv", index=False)
+        TimeSeriesDF.to_csv(data_path+"TimeSeries.csv", index=False)
+        observation_df.to_csv(data_path+"obs.csv", index=False)

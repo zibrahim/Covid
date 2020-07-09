@@ -4,13 +4,13 @@ from Processing.Dictionaries import aggregation
 from Processing.Helpers import getDay
 from Processing.CleanTimeSeries import remove_alpha
 from Processing.CleanTimeSeries import merge_INR
-from Processing.Settings import path
+from Processing.Settings import data_path
 def main():
-    time_series = pd.read_csv(path+"TimeSeries.csv")
+    time_series = pd.read_csv(data_path+"TimeSeries.csv")
 
     time_series['SxToAdmit']  = [getDay(ox) for ox in  time_series ['SxToAdmit']]
 
-    time_series.to_csv(path+"TimeSeriesNotAggregated.csv", index=False)
+    time_series.to_csv(data_path+"TimeSeriesNotAggregated.csv", index=False)
 
     time_series = merge_INR(time_series)
     time_series = remove_alpha(time_series)
@@ -76,7 +76,7 @@ def main():
     print("dim before remove na ", aggregate_series.shape)
     aggregate_series = aggregate_series.dropna(subset = na_columns, how='all')
     print("dim after remove na ", aggregate_series.shape)
-
-    aggregate_series.to_csv(path+"TimeSeriesAggregated.csv", index=False)
+#check why these are part of float: 'Day', 'OrdinalHour', 'FourHourIndex'
+    aggregate_series.to_csv(data_path+"TimeSeriesAggregated.csv", index=False)
 if __name__ == "__main__" :
     main()

@@ -8,42 +8,31 @@ from sklearn import metrics
 import matplotlib.pyplot as plt
 import shap as sp
 import lime as lm
-from tqdm import tqdm
+
+from MachineLearning.ExperimentI import ExperimentI
 
 
-from Processing.Settings import path
-
-def InputData():
-    dataset=pd.read_csv(path+"TimeSeriesAggregated.csv")
-    """
-    print('Datasize: %d x %d'%(len(dataset.index),len(dataset.columns)))
-    count=0
-    for i in range(2,len(dataset.columns)):
-        for j in range(0,len(dataset.index)):
-            if pd.isna(dataset[dataset.columns[i]][j]):
-                if count is 0:
-                    print(dataset.columns[i],end=': ')
-                count+=1
-        if count is not 0:
-            print(count)
-            count=0
-    """
-    try:
-        with tqdm(range(2,len(dataset.columns))) as bar:
-            ftName=[]
-            for i in bar:
-                dataset[dataset.columns[i]]=dataset[dataset.columns[i]].fillna(dataset[dataset.columns[i]].mean())
-                ftName.append(dataset.columns[i])
-    except KeyboardInterrupt:
-        bar.close()
-        raise
-    bar.close()
-    x=dataset[ftName]
-    y=dataset[dataset.columns[1]]
-    return x,y
+from Processing.Settings import data_path
 
 def main():
-    time_series = pd.read_csv(path+"TimeSeriesAggregated.csv")
+    time_series = pd.read_csv(data_path+"/TimeSeriesAggregated.csv")
+    dynamic_features = ['ALT', 'Albumin', 'Anticoagulant clinic INR', 'Bicarbonate',
+           'Biochemistry (Glucose)', 'Blood Lactate', 'C-Reactive-Protein',
+           'CSF Glucose', 'Creatinine', 'Creatinine Clearance.', 'D-Dimer',
+           'DiasBP', 'Estimated-GFR', 'Fasting Glucose.', 'Ferritin', 'FiO2',
+           'Fluid Albumin.', 'Fluid Glucose.', 'GCSEye', 'GCSMotor', 'GCSVerbal',
+           'HBA1c-DCCT', 'HBA1c-IFCC', 'Hb', 'HbA1c', 'HeartRate', 'INR',
+           'Lactate', 'Lactate (CSF)', 'Lactate (plasma)', 'Lactate-Dehydrogenase',
+           'Lymphocytes', 'Lymphocytes (LYMP)', 'NEWS2', 'NT-pro-BNP',
+           'Neutrophils', 'OxygenDelivery', 'OxygenLitres', 'OxygenSaturation',
+           'PCO2', 'PCV', 'PH', 'PLT', 'PO2', 'PO2/FIO2', 'PainScore',
+           'Protein/Creatinine Ratio', 'Random Glucose:', 'Random Urine pH',
+           'Random-Urine-Creatinine', 'RespirationRate', 'Reticulocyte HB Content',
+           'SupplementalOxygen', 'SysBP', 'Temperature', 'Troponin-I',
+           'Troponin-T', 'U-albumin/creat. ratio', 'Urea', 'Urine Albumin conc.',
+           'Urine Glucose', 'Urine Urea', 'Venous Bicarbonate', 'Venous PCO2',
+           'Venous PO2', 'Venous pH', 'WBC', 'WBC count (CSF)',
+           'WBC count (Fluid)', 'cHCO3']
 
     pd.options.mode.chained_assignment = None
 
@@ -60,7 +49,7 @@ def main():
     lrm=LogisticRegression(solver='lbfgs')
 
 
-    ExperimentI(time_series,xgbm)
+    exp1 = ExperimentI(time_series, dynamic_features)
     #ExperimentII(x,y,xgbm,rfm,lrm)
     #ExperimentIII(x,y,rfm,lrm)
     #ExperimentIV(x,y,xgbm,rfm,lrm)

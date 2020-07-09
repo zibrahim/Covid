@@ -6,22 +6,22 @@ from Processing.Clean import clean_outcomes
 from Processing.Clean import clean_blood
 from Processing.Clean import clean_vitals
 from Processing.Serialisation import jsonDump
-from Processing.Settings import path
+from Processing.Settings import data_path
 
 import sklearn
 
 # 1. Creat the cohort
-cohort_data = pd.read_csv(path+"original/outcomes.csv")
+cohort_data = pd.read_csv(data_path+"original/outcomes.csv")
 cohort_data = clean_outcomes(cohort_data)
 
 cohort = Cohort(cohort_data, 'PatientID', "covid-KCH")
 
 # 2. read Bloods
-blood_data = pd.read_csv(path+"original/bloods.csv")
+blood_data = pd.read_csv(data_path+"original/bloods.csv")
 blood_data = clean_blood(blood_data)
 
 # 2. read Vitals
-vitals_data = pd.read_csv(path+"original/vitals.csv")
+vitals_data = pd.read_csv(data_path+"original/vitals.csv")
 vitals_data = clean_vitals(vitals_data)
 
 def main():
@@ -63,7 +63,7 @@ def main():
             cohort.addBloodObservations(idx, bloods_for_patient, patientAdmissionDate)
             cohort.addVitalsObservations(idx, vitals_for_patient, patientAdmissionDate)
 
-    jsonDump(cohort,path+"Cohort.json")
+    jsonDump(cohort,data_path+"Cohort.json")
 
 if __name__ == "__main__":
     main()
