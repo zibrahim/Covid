@@ -5,7 +5,7 @@ from Processing.Helpers import getDayWrapper, getHourWrapper
 from Processing.Settings import path
 import json
 import numpy as np
-import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 
 class CohortEncoder(json.JSONEncoder):
@@ -110,9 +110,21 @@ def makeTimeSeries( cohort ):
 
             PatientDF['PatientID'] = ind.Patient_id
             PatientDF["Mortality"] = 1 if not pd.isnull(ind.DeathDate)  else 0
+
             PatientDF["ITUAdmission"] = 1 if not pd.isnull(ind.ITUDate)  else 0
-            AdmitDate = datetime.datetime.strptime(ind.AdmitDate, '%Y-%m-%d')
-            SxDate = datetime.datetime.strptime(ind.SxDate, '%Y-%m-%d')
+            AdmitDate = datetime.strptime(ind.AdmitDate, '%Y-%m-%d')
+            SxDate = datetime.strptime(ind.SxDate, '%Y-%m-%d')
+
+            deathRange = 8000
+            if (not pd.isnull(ind.DeathDate)):
+                DeathDate = datetime.strptime(ind.DeathDate, '%Y-%m-%d')
+                deathRange = DeathDate - AdmitDate
+
+            if ((not (pd.isnull(ind.DeathDate))) and (deathRange <= timedelta(days=30))) :
+                PatientDF['Mortality30Days'] = 1
+            else:
+                PatientDF['Mortality30Days'] = 0
+
             PatientDF["SxToAdmit"] = AdmitDate - SxDate
 
             for index, row in observation_df.iterrows() :
