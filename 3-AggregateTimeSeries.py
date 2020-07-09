@@ -11,6 +11,8 @@ def main():
 
     time_series['SxToAdmit']  = [getDay(ox) for ox in  time_series ['SxToAdmit']]
 
+    time_series.to_csv(path+"TimeSeriesNotAggregated.csv", index=False)
+
     time_series = merge_INR(time_series)
     time_series = remove_alpha(time_series)
     #time_series = remove_nacolumns(time_series)

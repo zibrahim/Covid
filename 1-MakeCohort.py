@@ -11,17 +11,17 @@ from Processing.Settings import path
 import sklearn
 
 # 1. Creat the cohort
-cohort_data = pd.read_csv(path+"outcomes.csv")
+cohort_data = pd.read_csv(path+"original/outcomes.csv")
 cohort_data = clean_outcomes(cohort_data)
 
 cohort = Cohort(cohort_data, 'PatientID', "covid-KCH")
 
 # 2. read Bloods
-blood_data = pd.read_csv(path+"bloods.csv")
+blood_data = pd.read_csv(path+"original/bloods.csv")
 blood_data = clean_blood(blood_data)
 
 # 2. read Vitals
-vitals_data = pd.read_csv(path+"vitals.csv")
+vitals_data = pd.read_csv(path+"original/vitals.csv")
 vitals_data = clean_vitals(vitals_data)
 
 def main():

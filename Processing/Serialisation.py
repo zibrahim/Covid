@@ -25,7 +25,7 @@ def jsonDump ( cohort, filename ) :
         json_dict = {}
         individuals = []
         for ind in cohort.individuals :
-            person_dic = ind.as_dict(ind.Patient_id)
+            person_dic = ind.as_dict()
             i = 0
             observations = []
             for obs in ind.__getattribute__("observations") :
@@ -85,20 +85,24 @@ def makeTimeSeries( cohort ):
             observation_df['Day'] = observation_df.apply(lambda x: getDayWrapper(x['ObservationOrdinalTime']),axis=1)
             observation_df['Hour'] = observation_df.apply(lambda x: getHourWrapper(x['ObservationOrdinalTime']),axis=1)
 
+
             observation_df['Day'] = observation_df['Day'].astype(int)
             observation_df['Hour'] = observation_df['Hour'].astype(int)
 
-            days = pd.Series([-2,-1,0,1,2])
+
+            #Subset observations to include days -1 to 2
+            observation_df = observation_df.loc[observation_df.Day >=-1]
+            observation_df = observation_df.loc[observation_df.Day <= 2]
+
+            days = pd.Series([-1,0,1,2])
 
             PatientDF['Day'] = days.repeat(24)
 
-            PatientDF.loc[PatientDF.Day == -2, "Hour"] = range(-48,-24)
             PatientDF.loc[PatientDF.Day == -1, "Hour"] = range(-24,0)
             PatientDF.loc[PatientDF.Day == 0, "Hour"] = range(0,24)
             PatientDF.loc[PatientDF.Day == 1, "Hour"] = range(24,48)
             PatientDF.loc[PatientDF.Day == 2, "Hour"] = range(48,72)
 
-            PatientDF.loc[PatientDF.Day == -2, "OrdinalHour"] = range(0,24)
             PatientDF.loc[PatientDF.Day == -1, "OrdinalHour"] = range(0,24)
             PatientDF.loc[PatientDF.Day == 0, "OrdinalHour"] = range(0,24)
             PatientDF.loc[PatientDF.Day == 1, "OrdinalHour"] = range(0,24)

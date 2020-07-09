@@ -13,43 +13,27 @@ from tqdm import tqdm
 
 from Processing.Settings import path
 
-def InputData():
-    dataset=pd.read_csv(path+"TimeSeriesAggregated.csv")
-    """
-    print('Datasize: %d x %d'%(len(dataset.index),len(dataset.columns)))
-    count=0
-    for i in range(2,len(dataset.columns)):
-        for j in range(0,len(dataset.index)):
-            if pd.isna(dataset[dataset.columns[i]][j]):
-                if count is 0:
-                    print(dataset.columns[i],end=': ')
-                count+=1
-        if count is not 0:
-            print(count)
-            count=0
-    """
-    try:
-        with tqdm(range(2,len(dataset.columns))) as bar:
-            ftName=[]
-            for i in bar:
-                dataset[dataset.columns[i]]=dataset[dataset.columns[i]].fillna(dataset[dataset.columns[i]].mean())
-                ftName.append(dataset.columns[i])
-    except KeyboardInterrupt:
-        bar.close()
-        raise
-    bar.close()
-    x=dataset[ftName]
-    y=dataset[dataset.columns[1]]
-    return x,y
 
 def main():
-    time_series = pd.read_csv(path+"TimeSeriesAggregated.csv")
 
     pd.options.mode.chained_assignment = None
-    x, y = InputData()
+    timeseries_dataset=pd.read_csv(path+"TimeSeriesAggregated.csv")
+    patientsNotOld = pd.read_csv(path+"PatientsNotOld.csv")
 
-    print(x.columns)
-    print(y.head())
+    patient_ids_not_old = patientsNotOld['PatientID']
+    timeseries_dataset = timeseries_dataset[timeseries_dataset.PatientID.isin(patient_ids_not_old) ]
+
+    #oxygenation_index_missingness = timeseries_dataset['PO2/FIO2'].isnull().sum()*100/len(timeseries_dataset['PO2/FIO2'])
+
+    patient_clusters = patientsNotOld[['PatientID', 'cluster_assignment']]
+
+    timeseries_with_clusters = pd.merge(timeseries_dataset, patient_clusters, on='PatientID', how='inner')
+
+    timeseries_with_clusters.to_csv(path+"timeseries_with_clusters_not_old.csv", index=False)
+
+   #print(timeseries_with_clusters[timeseries_with_clusters['Mortality'] ==1])
+
+
     xgbm=xgb.XGBClassifier(scale_pos_weight=263/73,
                            learning_rate=0.007,
                            n_estimators=100,

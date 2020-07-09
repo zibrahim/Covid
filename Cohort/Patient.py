@@ -1,5 +1,6 @@
 import pandas as pd
-import datetime
+from datetime import datetime, timedelta
+from dateutil import parser
 
 class Patient:
     def __init__(self, id, age,gender, sxDate, admitDate, deathDate, itudate,
@@ -36,9 +37,23 @@ class Patient:
 
     def as_dict(self):
         number_comorbidities = self.CKD+self.HTN+self.IHD+self.Diabetes+self.HF+self.Asthma+self.COPD
-        AdmitDate = datetime.datetime.strptime(self.AdmitDate, '%Y-%m-%d')
-        SxDate = datetime.datetime.strptime(self.SxDate, '%Y-%m-%d')
+        AdmitDate = datetime.strptime(self.AdmitDate, '%Y-%m-%d')
+        SxDate = datetime.strptime(self.SxDate, '%Y-%m-%d')
+
+        #print("printing patients' death date: ", self.DeathDate, "type: ", type(self.DeathDate))
+
+        deathRange = 80000
+        if not (pd.isnull(self.DeathDate)):
+            DeathDate = datetime.strptime(self.DeathDate, '%Y-%m-%d')
+            deathRange = DeathDate- AdmitDate
+
         symptomsToAdmission = AdmitDate - SxDate
+        mortality_30_days = 0
+
+        thirty_days = datetime.now() - timedelta(days=30)
+        if ((not (pd.isnull(self.DeathDate))) and (deathRange <= thirty_days)):
+            mortality_30_days = 1
+
         mortality = 0
         if not (pd.isnull(self.DeathDate)):
             mortality = 1
@@ -62,6 +77,7 @@ class Patient:
                        'CKD' : self.CKD,
                        'NumComorbidities' : number_comorbidities,
                        'Mortality':mortality,
+                       'Mortality-30-Days': mortality_30_days,
                        'ITUAdmission': ituAdmission,
                        'SymptomsToAdmission': symptomsToAdmission
                        }
