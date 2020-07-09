@@ -50,8 +50,7 @@ class Patient:
         symptomsToAdmission = AdmitDate - SxDate
         mortality_30_days = 0
 
-        thirty_days = datetime.now() - timedelta(days=30)
-        if ((not (pd.isnull(self.DeathDate))) and (deathRange <= thirty_days)):
+        if ((not (pd.isnull(self.DeathDate))) and (deathRange <=  timedelta(days=30))):
             mortality_30_days = 1
 
         mortality = 0
