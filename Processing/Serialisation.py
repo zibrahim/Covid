@@ -109,6 +109,8 @@ def makeTimeSeries( cohort ):
             PatientDF.loc[PatientDF.Day == 2, "OrdinalHour"] = range(0,24)
 
             PatientDF['PatientID'] = ind.Patient_id
+            PatientDF['Age'] = ind.Age
+
             PatientDF["Mortality"] = 1 if not pd.isnull(ind.DeathDate)  else 0
 
             PatientDF["ITUAdmission"] = 1 if not pd.isnull(ind.ITUDate)  else 0
