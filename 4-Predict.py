@@ -15,7 +15,7 @@ from MachineLearning.ExperimentI import ExperimentI
 from Processing.Settings import data_path
 
 def main():
-    time_series = pd.read_csv(data_path+"/TimeSeriesAggregated.csv")
+    time_series = pd.read_csv(data_path+"TimeSeriesAggregated.csv")
     dynamic_features = ['ALT', 'Albumin', 'Anticoagulant clinic INR', 'Bicarbonate',
            'Biochemistry (Glucose)', 'Blood Lactate', 'C-Reactive-Protein',
            'CSF Glucose', 'Creatinine', 'Creatinine Clearance.', 'D-Dimer',
@@ -49,7 +49,7 @@ def main():
     lrm=LogisticRegression(solver='lbfgs')
 
 
-    exp1 = ExperimentI(time_series, dynamic_features)
+    ExperimentI(time_series, dynamic_features, xgbm)
     #ExperimentII(x,y,xgbm,rfm,lrm)
     #ExperimentIII(x,y,rfm,lrm)
     #ExperimentIV(x,y,xgbm,rfm,lrm)
