@@ -44,10 +44,10 @@ def main():
             upper_limit = upper_limit + 4
 
         new_time_series = new_time_series.append(patient_slice, ignore_index=True)
-    new_time_series.to_csv(path+"new_time_series.csv", index=False)
+    new_time_series.to_csv(data_path+"new_time_series.csv", index=False)
 
-    new_time_series = pd.read_csv(path+"new_time_series.csv")
-    os.remove(path+"new_time_series.csv")
+    new_time_series = pd.read_csv(data_path+"new_time_series.csv")
+    os.remove(data_path+"new_time_series.csv")
 
     new_time_series[["PatientID"]] = "p_"+new_time_series[["PatientID"]].astype(str)
 
