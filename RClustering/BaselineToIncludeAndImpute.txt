@@ -1,0 +1,46 @@
+Blood Lactate
+C-Reactive-Protein
+Creatinine
+D-Dimer
+DiasBP
+Estimated-GFR
+Ferritin
+FiO2
+GCSEye
+GCSMotor
+GCSVerbal
+Hb
+HeartRate
+INR
+INR (warfarin)
+Lactate (plasma)
+Lactate-Dehydrogenase
+Lymphocytes
+NEWS2
+NT-pro-BNP
+Neutrophils
+OxygenDelivery
+OxygenLitres
+OxygenSaturation
+PCO2
+PCV
+PH
+PLT
+PO2
+PO2/FIO2
+PainScore
+Protein/Creatinine Ratio
+Random-Urine-Creatinine
+RespirationRate
+Reticulocyte HB Content
+SupplementalOxygen
+SysBP
+Temperature
+Troponin-T
+Urea
+Venous Bicarbonate
+Venous PCO2
+Venous PO2
+Venous pH
+WBC
+cHCO3

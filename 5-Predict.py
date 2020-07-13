@@ -6,6 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from MachineLearning.ExperimentI import ExperimentI
 from MachineLearning.ExperimentII import ExperimentII
 from MachineLearning.ExperimentIII import ExperimentIII
+from MachineLearning.ExperimentIV import ExperimentIV
 
 from Processing.Settings import data_path
 
@@ -13,7 +14,7 @@ def main():
     time_series = pd.read_csv(data_path+"TimeSeriesAggregated.csv")
     time_series_clustered = pd.read_csv(data_path+"TimeSeriesAggregatedClustered.csv")
     time_series_clustered_not_old = pd.read_csv(data_path+"TimeSeriesAggregatedClusteredNotOld.csv")
-
+    time_series_clustered_baseline = pd.read_csv(data_path+"TimeSeriesAggregatedClusteredBaseline.csv")
 
     dynamic_features = ['Hour','ALT', 'Albumin', 'Anticoagulant clinic INR', 'Bicarbonate',
            'Biochemistry (Glucose)', 'Blood Lactate', 'C-Reactive-Protein',
@@ -42,7 +43,7 @@ def main():
     ExperimentI(time_series)
     ExperimentII(time_series_clustered)
     ExperimentIII(time_series_clustered_not_old)
-    #ExperimentIV(x,y,xgbm,rfm,lrm)
+    ExperimentIV(time_series_clustered_baseline)
     #ExperimentV(x,y,xgbm,rfm,lrm)
     #ExperimentVI(x,y,xgbm,rfm,lrm)
     #ExperimentVII(xgbm,rfm,lrm)

@@ -73,9 +73,9 @@ def main():
 
     print(aggregate_series['PO2/FIO2'].isnull().sum() * 100 /len(aggregate_series['PO2/FIO2']))
 
-    print("dim before remove na ", aggregate_series.shape)
-    aggregate_series = aggregate_series.dropna(subset = na_columns, how='all')
-    print("dim after remove na ", aggregate_series.shape)
+    #print("dim before remove na ", aggregate_series.shape)
+    #aggregate_series = aggregate_series.dropna(subset = na_columns, how='all')
+    #print("dim after remove na ", aggregate_series.shape)
 #check why these are part of float: 'Day', 'OrdinalHour', 'FourHourIndex'
     aggregate_series.to_csv(data_path+"TimeSeriesAggregated.csv", index=False)
 if __name__ == "__main__" :

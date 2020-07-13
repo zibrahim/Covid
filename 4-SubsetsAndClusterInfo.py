@@ -8,15 +8,16 @@ import matplotlib.pyplot as plt
 import shap as sp
 import lime as lm
 
-from MachineLearning.ExperimentI import ExperimentI
 
 
-from Processing.Settings import data_path
+from Processing.Settings import data_path, clustering_path
 
 def main():
     aggregated_timeseries = pd.read_csv(data_path + "TimeSeriesAggregated.csv")
     clustered_cohort = pd.read_csv(data_path + "cohortClustered.csv")
     clustered_cohort_not_old = pd.read_csv(data_path + "cohortClusteredNotOld.csv")
+    clustered_cohort_baseline = pd.read_csv(clustering_path+"CohortClusteredBaseline.csv")
+    clustered_cohort_baseline = clustered_cohort_baseline[['PatientID','Age','cluster_assignment']]
 
     print(clustered_cohort.columns)
     clustered_cohort = clustered_cohort[['PatientID', 'NumComorbiditiesUnscaled', 'cluster_assignment']]
@@ -31,6 +32,8 @@ def main():
 
     aggregated_timeseries_all = pd.merge(aggregated_timeseries, clustered_cohort, on=['PatientID'])
     aggregated_timeseries_not_old = pd.merge(aggregated_timeseries, clustered_cohort_not_old, on=['PatientID'])
+    aggregated_timeseries_baseline = pd.merge(aggregated_timeseries, clustered_cohort_baseline, on=['PatientID'])
+
 
     print(" COLUMN NAMES OF AGGREGARED TIME SERIES ALL OLD: ")
     print(aggregated_timeseries_all.columns)
@@ -38,6 +41,7 @@ def main():
 
     aggregated_timeseries_all.to_csv(data_path+"TimeSeriesAggregatedClustered.csv", index=False)
     aggregated_timeseries_not_old.to_csv(data_path+"TimeSeriesAggregatedClusteredNotOld.csv", index=False)
+    aggregated_timeseries_baseline.to_csv(data_path+"TimeSeriesAggregatedClusteredBaseline.csv", index=False)
 
 
 if __name__ == '__main__' :

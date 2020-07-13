@@ -16,7 +16,7 @@ class CohortEncoder(json.JSONEncoder):
             return float(obj)
         elif isinstance(obj, np.ndarray):
             return obj.tolist()
-        elif isinstance(obj, datetime.timedelta):
+        elif isinstance(obj, timedelta):
             return str(obj)
         else:
             return super(CohortEncoder, self).default(obj)
@@ -112,6 +112,7 @@ def makeTimeSeries( cohort ):
             PatientDF['Age'] = ind.Age
 
             PatientDF["Mortality"] = 1 if not pd.isnull(ind.DeathDate)  else 0
+            PatientDF["NumComorbidities"] = ind.Asthma + ind.CKD + ind.COPD + ind.HF + ind.IHD + ind.HTN + ind.Diabetes
 
             PatientDF["ITUAdmission"] = 1 if not pd.isnull(ind.ITUDate)  else 0
             AdmitDate = datetime.strptime(ind.AdmitDate, '%Y-%m-%d')

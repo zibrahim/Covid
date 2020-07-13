@@ -221,6 +221,8 @@ class Cohort :
         all_column_names = np.unique(all_column_names)
 
         all_column_names = np.insert(all_column_names, 0,"SxToAdmit")
+        all_column_names = np.insert(all_column_names, 0,"NumComorbidities")
+
         all_column_names = np.insert(all_column_names, 0,"Mortality30Days")
         all_column_names = np.insert(all_column_names, 0,"Mortality")
         all_column_names = np.insert(all_column_names, 0,"ITUAdmission")
