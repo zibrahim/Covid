@@ -16,10 +16,15 @@ class ExperimentII:
                             'Urea', 'WBC', 'cHCO3', 'cluster_assignment']
 
         experiment_number = "2"
+        outcome_label = "ITUAdmission"
         y = time_series['ITUAdmission']
         X = time_series[dynamic_features]
         X.reset_index()
         groups = np.array(time_series['PatientID'])
-        run_xgboost_classifier(X,y, groups, experiment_number)
+        run_xgboost_classifier(X,y, outcome_label,  groups, experiment_number)
+
+        outcome_label = "Mortality"
+        y = time_series['Mortality']
+        run_xgboost_classifier(X,y, outcome_label,  groups, experiment_number)
 
 

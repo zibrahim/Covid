@@ -21,8 +21,6 @@ def main():
     time_series['FourHourIndex'] = -1
     new_time_series = pd.DataFrame(columns=time_series.columns)
 
-    print(new_time_series.columns)
-
     #3. Create a new column that aggregates every 4 hours into 1
     for p in patient_ids:
         patient_slice = time_series.loc[time_series.PatientID ==p,]
@@ -51,32 +49,27 @@ def main():
 
     new_time_series[["PatientID"]] = "p_"+new_time_series[["PatientID"]].astype(str)
 
-    int_columns = [ "Day", "Hour", 'ITUAdmission', "Age", "Mortality","Mortality30Days", "SxToAdmit","OrdinalHour", "FourHourIndex"]
+    int_columns = [ "Day", "Hour", 'ITUAdmission', "Age", "Mortality","Mortality30Days","NumComorbidities", "SxToAdmit","OrdinalHour", "FourHourIndex"]
     new_time_series[int_columns] = new_time_series[int_columns].astype(int)
 
     na_columns = set(new_time_series.columns) - set(int_columns)
     na_columns = na_columns - set(['PatientID'])
 
     float_columns = new_time_series.columns[7:]
-    print(" int columns: ", int_columns)
-    print(" float columns: ", float_columns)
-
     new_time_series[float_columns] = new_time_series[float_columns].astype(float)
 
     aggregate_series = new_time_series.groupby(['PatientID', 'FourHourIndex']).aggregate(aggregation)
-
     print(aggregate_series['PO2/FIO2'].isnull().sum() * 100 /len(aggregate_series['PO2/FIO2']))
     # 1. Identify columns where PO2/FIO2 is null but both FIO2 and PO2 are not null
     matches = aggregate_series['PO2/FIO2'].isnull() & aggregate_series['FiO2'].notnull() & aggregate_series['PO2'].notnull()
     # 2. Calculate PO2/FIO2 for the columns using the individual PO2 and FIO2 values
     aggregate_series.loc[matches, 'PO2/FIO2'] = aggregate_series.loc[matches, 'PO2']/aggregate_series.loc[matches, 'FiO2']
 
-    print(aggregate_series['PO2/FIO2'].isnull().sum() * 100 /len(aggregate_series['PO2/FIO2']))
+    #print(aggregate_series['PO2/FIO2'].isnull().sum() * 100 /len(aggregate_series['PO2/FIO2']))
 
     #print("dim before remove na ", aggregate_series.shape)
-    #aggregate_series = aggregate_series.dropna(subset = na_columns, how='all')
+    aggregate_series = aggregate_series.dropna(subset = na_columns, how='all')
     #print("dim after remove na ", aggregate_series.shape)
-#check why these are part of float: 'Day', 'OrdinalHour', 'FourHourIndex'
     aggregate_series.to_csv(data_path+"TimeSeriesAggregated.csv", index=False)
 if __name__ == "__main__" :
     main()

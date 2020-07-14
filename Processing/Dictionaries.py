@@ -89,6 +89,8 @@ aggregation = { #ZI Check Aggregation function is appropriate
     'Hour': 'first',
     'Mortality' : 'first',
     'SxToAdmit' : 'first',
+    'Age': 'first',
+    'NumComorbidities': 'first',
     'ALT' : max,
     'Albumin': 'mean',
     'Anticoagulant clinic INR': max,

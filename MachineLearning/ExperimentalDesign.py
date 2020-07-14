@@ -58,7 +58,7 @@ def get_distribution ( y_vals ) :
     y_vals_sum = sum(y_distr.values())
     return [f'{y_distr[i] / y_vals_sum:.2%}' for i in range(np.max(y_vals) + 1)]
 
-def run_xgboost_classifier(X,y, groups, experiment_number):
+def run_xgboost_classifier(X,y, label, groups, experiment_number):
     xgbm=xgb.XGBClassifier(scale_pos_weight=263/73,
                            learning_rate=0.007,
                            n_estimators=100,
@@ -73,10 +73,10 @@ def run_xgboost_classifier(X,y, groups, experiment_number):
 
     tprs = []
     aucs = []
-    mean_fpr = np.linspace(0, 1, 5) #CROSS VALIDATION CHANGE
+    mean_fpr = np.linspace(0, 1, 10) #CROSS VALIDATION CHANGE
     plt.figure(figsize=(10, 10))
 
-    for fold_ind, (training_ind, testing_ind) in enumerate(stratified_group_k_fold(X, y, groups, k=5)) : #CROSS-VALIDATION
+    for fold_ind, (training_ind, testing_ind) in enumerate(stratified_group_k_fold(X, y, groups, k=10)) : #CROSS-VALIDATION
         training_groups, testing_groups = groups[training_ind], groups[testing_ind]
         training_y, testing_y = y[training_ind], y[testing_ind]
         training_X, testing_X = X.iloc[training_ind], X.iloc[testing_ind]
@@ -129,7 +129,7 @@ def run_xgboost_classifier(X,y, groups, experiment_number):
     plt.title('XGBoost Cross-Validation ROC', fontsize=18)
     # plt.legend(loc="lower right", prop={'size' : 15})
 
-    plt.savefig(prediction_path + "Experiment"+ experiment_number+ "ROC_XGBoost.pdf")
+    plt.savefig(prediction_path + "Experiment"+ experiment_number+ label + "ROC_XGBoost.pdf")
 
     distr_df = pd.DataFrame(distrs, index=index, columns=[f'Label {l}' for l in range(np.max(y) + 1)])
     distr_df.to_csv(stats_path + "Experiment"+experiment_number+"-K-Fold-Distributions.csv", index=True)
