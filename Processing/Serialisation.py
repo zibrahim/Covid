@@ -118,10 +118,43 @@ def makeTimeSeries( cohort ):
             AdmitDate = datetime.strptime(ind.AdmitDate, '%Y-%m-%d')
             SxDate = datetime.strptime(ind.SxDate, '%Y-%m-%d')
 
+            ITURange = 8000
+
+            if (not pd.isnull(ind.ITUDate)) :
+                ITUDate = datetime.strptime(ind.ITUDate, '%Y-%m-%d')
+                ITURange = ITUDate  - AdmitDate
+
+
+            if ((not (pd.isnull(ind.ITUDate))) and (ITURange <= timedelta(days=7))) :
+                PatientDF['ITUAdmission7Days'] = 1
+            else:
+                PatientDF['ITUAdmission7Days'] = 0
+
+            if ((not (pd.isnull(ind.ITUDate))) and (ITURange <= timedelta(days=14))) :
+                PatientDF['ITUAdmission14Days'] = 1
+            else:
+                PatientDF['ITUAdmission14Days'] = 0
+
+            if ((not (pd.isnull(ind.ITUDate))) and (ITURange <= timedelta(days=30))) :
+                PatientDF['ITUAdmission30Days'] = 1
+            else :
+                PatientDF['ITUAdmission30Days'] = 0
+
             deathRange = 8000
+
             if (not pd.isnull(ind.DeathDate)):
                 DeathDate = datetime.strptime(ind.DeathDate, '%Y-%m-%d')
                 deathRange = DeathDate - AdmitDate
+
+            if ((not (pd.isnull(ind.DeathDate))) and (deathRange <= timedelta(days=7))) :
+                PatientDF['Mortality7Days'] = 1
+            else:
+                PatientDF['Mortality7Days'] = 0
+
+            if ((not (pd.isnull(ind.DeathDate))) and (deathRange <= timedelta(days=14))) :
+                PatientDF['Mortality14Days'] = 1
+            else:
+                PatientDF['Mortality14Days'] = 0
 
             if ((not (pd.isnull(ind.DeathDate))) and (deathRange <= timedelta(days=30))) :
                 PatientDF['Mortality30Days'] = 1
