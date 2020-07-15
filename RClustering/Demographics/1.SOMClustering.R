@@ -34,6 +34,7 @@ patient.data$Age = as.vector(scale(patient.data$Age))
 patient.data$SymptomsToAdmissionUnscaled = patient.data$SymptomsToAdmission
 patient.data$SymptomsToAdmission = as.vector(scale(patient.data$SymptomsToAdmission))
 
+
 patient.data$NumComorbiditiesUnscaled = patient.data$NumComorbidities
 patient.data$NumComorbidities = as.vector(scale(patient.data$NumComorbidities))
 

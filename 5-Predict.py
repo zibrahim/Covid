@@ -11,9 +11,10 @@ from MachineLearning.ExperimentIV import ExperimentIV
 from Processing.Settings import data_path, clustered_timeseries_path
 
 def main():
-    time_series = pd.read_csv(data_path+"TimeSeriesAggregated.csv")
     time_series_clustered_demographics = pd.read_csv(clustered_timeseries_path +"TimeSeriesAggregatedClustered.csv")
     time_series_clustered_demographics_not_old = pd.read_csv(clustered_timeseries_path+"TimeSeriesAggregatedClusteredNotOld.csv")
+    time_series_clustered_baseline = pd.read_csv(clustered_timeseries_path+"TimeSeriesAggregatedClusteredBaseline.csv")
+
 
     dynamic_features = ['Hour','ALT', 'Albumin', 'Anticoagulant clinic INR', 'Bicarbonate',
            'Biochemistry (Glucose)', 'Blood Lactate', 'C-Reactive-Protein',
@@ -41,7 +42,7 @@ def main():
 
     ExperimentI(time_series_clustered_demographics)
     ExperimentII(time_series_clustered_demographics_not_old)
-    #ExperimentII(time_series_clustered)
+    ExperimentIII(time_series_clustered_baseline)
     #ExperimentIII(time_series_clustered_not_old)
     #ExperimentIV(time_series_clustered_baseline)
     #ExperimentV(x,y,xgbm,rfm,lrm)

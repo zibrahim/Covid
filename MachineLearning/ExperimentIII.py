@@ -1,8 +1,7 @@
 import numpy as np
 from MachineLearning.ExperimentalDesign import run_xgboost_classifier
 
-#INPUT: TIME SERIES WITH CLUSTERS ADDED AGE <=75 AND CLUSTERS AS FEATURES
-#OUTPUT: ITU ADMISSION - CHANGED TO MORTALITY
+
 class ExperimentIII:
     def __init__(self,time_series):
         print(" IN EXPERIMENT III. Columns of time series are:")
@@ -18,10 +17,14 @@ class ExperimentIII:
                             'Urea', 'WBC', 'cHCO3', 'cluster_assignment']
 
         experiment_number = "3"
+        outcome_label = "Mortality"
         y = time_series['Mortality']
         X = time_series[dynamic_features]
         X.reset_index()
         groups = np.array(time_series['PatientID'])
-        run_xgboost_classifier(X,y, groups, experiment_number)
+        run_xgboost_classifier(X,y, outcome_label,  groups, experiment_number)
 
+        outcome_label = "ITUAdmission"
+        y = time_series['ITUAdmission']
+        run_xgboost_classifier(X,y, outcome_label,  groups, experiment_number)
 

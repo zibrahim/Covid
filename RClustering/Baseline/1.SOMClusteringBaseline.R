@@ -38,9 +38,6 @@ column.names = c("ALT" , "Albumin", "Bicarbonate" , "Biochemistry..Glucose.", "B
                             "Random.Urine.Creatinine",   "RespirationRate" , "Reticulocyte.HB.Content"  , "SupplementalOxygen" , "SysBP",
                             "Temperature", "Troponin.T" , "Urea" , "Venous.Bicarbonate" ,  "Venous.PCO2" ,  "Venous.PO2", "Venous.pH", "WBC" , "cHCO3"   )
 
-clustering.columns = c( "OxygenSaturation" , "SupplementalOxygen" ,"SysBP", "HeartRate", "GCSVerbal", "Temperature", "RespirationRate", "WBC",  "Hb" ,
-                        "Lymphocytes", "Neutrophils","Urea", "Creatinine",  "C.Reactive.Protein", "Albumin", "PLT")
-
 
 
 clustering.columns = c( "OxygenSaturation" , "SupplementalOxygen" ,"SysBP", "HeartRate", "Temperature", "RespirationRate", "WBC",  "Hb" ,
@@ -50,29 +47,59 @@ clustering.columns = c( "OxygenSaturation" , "SupplementalOxygen" ,"SysBP", "Hea
 patient.data[,-c(1:7)] <- mutate_all(patient.data[,-c(1:7)], function(x) as.numeric(as.character(x)))
 
 patient.data$AgeUnscaled = patient.data$Age
+patient.data$Age = as.vector(scale(patient.data$Age))
+
 patient.data$OxygenSaturationUnscaled = patient.data$OxygenSaturation
+patient.data$OxygenSaturation = as.vector(scale(patient.data$OxygenSaturation))
+
 patient.data$SupplementalOxygen = as.factor(patient.data$SupplementalOxygen)
-patient.data$SupplementalOxygenUnscaled = patient.data$SupplementalOxygen
+
 patient.data$SysbPUnscaled = patient.data$SysBP
+patient.data$SysBP = as.vector(scale(patient.data$SysBP))
+
 patient.data$HeartRateUnscaled = patient.data$HeartRate
+patient.data$HeartRate = as.vector(scale(patient.data$HeartRate))
+
 patient.data$GCSVerbal = as.factor(patient.data$GCSVerbal)
-patient.data$GCSVerbalUnscaled = patient.data$GCSVerbal
+
 patient.data$TemperatureUnscaled = patient.data$Temperature
+patient.data$Temperature = as.vector(scale(patient.data$Temperature))
+
 patient.data$RespirationRateUnscaled = patient.data$RespirationRate
+patient.data$RespirationRate = as.vector(scale(patient.data$RespirationRate))
+
 patient.data$WBCUnscaled = patient.data$WBC
+patient.data$WBC = as.vector(scale(patient.data$WBC))
+
 patient.data$HbUnscaled =patient.data$Hb
-patient.data$LymphocytesUnscaled = patient.data$Lymphycytes
+patient.data$Hb = as.vector(scale(patient.data$Hb))
+
+patient.data$LymphocytesUnscaled = patient.data$Lymphocytes
+patient.data$Lymphocytes = as.vector(scale(patient.data$Lymphocytes))
+
 patient.data$NeutrophilsUnscaled = patient.data$Neutrophils
+patient.data$Neutrophils = as.vector(scale(patient.data$Neutrophils))
+
 patient.data$UreaUnscaled = patient.data$Urea
+patient.data$Urea = as.vector(scale(patient.data$Urea))
+
 patient.data$CreatinineUnscaled = patient.data$Creatinine
+patient.data$Creatinine = as.vector(scale(patient.data$Creatinine))
+
 patient.data$C.Reactive.ProteinUnscaled = patient.data$C.Reactive.Protein
+patient.data$C.Reactive.Protein = as.vector(scale(patient.data$C.Reactive.Protein))
+
 patient.data$AlbuminUnscaled = patient.data$Albumin
+patient.data$Albumin = as.vector(scale(patient.data$Albumin))
+
 patient.data$PLTUnscaled = patient.data$PLT
+patient.data$PLT = as.vector(scale(patient.data$PLT))
+
 patient.data$SysBPUnscaled = patient.data$SysbP
+patient.data$SysbP = as.vector(scale(patient.data$SysbP))
+
 
 clustering.data = patient.data[clustering.columns]
-
-
 clustering.data= data.matrix(clustering.data, rownames.force = NA)
 
 ################################2. Train SOM grid
@@ -83,29 +110,29 @@ knox.som = kohonen::supersom(clustering.data,grid = som_grid, rlen=1000,alpha=c(
 
 ################################4. Plot clustering performance metrics
     ##plot changes in neighbourhood to examining quality. It took 1000 iterations to reach a 'plateau' curve.
-    pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/trainingQuality.pdf")
+    pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/trainingQuality.pdf")
     plot(knox.som, type="changes", main="Training Progress")
     dev.off()
 
     ##plot the count of samples mapping to each cluster.
-    pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/nodeCount.pdf")
+    pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/nodeCount.pdf")
     plot(knox.som, type="count", main="Node Counts")
     dev.off()
 
     ##Plot distance matrix: Often referred to as the “U-Matrix”, this visualisation is of the distance between each node and its neighbours. Typically viewed with a grayscale palette,
     ##areas of low neighbour distance indicate groups of nodes that are similar. Areas with large distances indicate the nodes are much more dissimilar –
     ##and indicate natural boundaries between node clusters. The U-Matrix can be used to identify clusters within the SOM map.
-    pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/neighbourDistance.pdf")
+    pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/neighbourDistance.pdf")
     plot(knox.som, type="dist.neighbours", main = "SOM neighbour distances")
     dev.off()
     ##plot quality map: shows the mean distance of objects mapped to a unit to the codebook vector of that unit.
     ##The smaller the distances, the better the objects are represented by the codebook vectors.
-    pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/quality.pdf")
+    pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/quality.pdf")
     plot(knox.som, type="quality", main="Clustering Quality")
     dev.off()
     ##plot the codebook vectors, representing the distribution of each feature in each SOM node using a fan diagram.
     ##individual fan representations of the magnitude of each variable in the weight vector is shown for each node.
-    pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/nodes.pdf")
+    pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/nodes.pdf")
     plot(knox.som, type="codes", main="Codes") #palette.name=coolBlueHotRed
     dev.off()
 
@@ -128,7 +155,7 @@ knox.som = kohonen::supersom(clustering.data,grid = som_grid, rlen=1000,alpha=c(
     dist_on_map = kohonen::unit.distances(som_grid)
     dist_adj = dist_m ^ dist_on_map
     #############6.2 calculating optimal number of clusters visually: Ellbow, Silhouette and Gap
-    pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/optimalNoOfClustersElbow.pdf")
+    pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/optimalNoOfClustersElbow.pdf")
     factoextra::fviz_nbclust(dist_adj
                     , factoextra::hcut
                     , method = "wss"
@@ -137,7 +164,7 @@ knox.som = kohonen::supersom(clustering.data,grid = som_grid, rlen=1000,alpha=c(
 
     dev.off()
 
-    pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/optimalNoOfClustersSilhouette.pdf")
+    pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/optimalNoOfClustersSilhouette.pdf")
     factoextra::fviz_nbclust(dist_adj
                      , factoextra::hcut
                      , method = "silhouette"
@@ -194,7 +221,7 @@ knox.som = kohonen::supersom(clustering.data,grid = som_grid, rlen=1000,alpha=c(
     save(df_clust_success, file = 'NumberOfClustersVotes.Rdata')
 
     #plot votes
-    pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/VotesOnNoOfClusters.pdf")
+    pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/VotesOnNoOfClusters.pdf")
     df_clust_success %>%
     filter(!is_null(best_nc) )%>%
     ggplot( aes(x = as.factor(best_nc))) +
@@ -212,7 +239,7 @@ knox.som = kohonen::supersom(clustering.data,grid = som_grid, rlen=1000,alpha=c(
 
     #############Cluster using final.number.of.clusters clusters (generated by analysis above).
     som_clusters = cutree(clust_adj, final.number.of.clusters) 
-    pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/Clusters.pdf")
+    pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/Clusters.pdf")
     plot(knox.som, type = "property", property=som_clusters,main="Clusters",palette.name=rainbow, heatkeywidth = 0.9)
     add.cluster.boundaries(knox.som, som_clusters,lwd=3)
     dev.off()
@@ -225,6 +252,6 @@ knox.som = kohonen::supersom(clustering.data,grid = som_grid, rlen=1000,alpha=c(
 
 
     #############Save Image for plotting later on
-    save.image(file="/Users/babylon/Documents/Data/KCHData/SOMClusteringBaseline.RData")
+    save.image(file="/Users/babylon/Documents/Data/KCHData/ClusteringData/SOMClusteringBaseline.RData")
 
-    write.csv(patient.data, file = "/Users/babylon/Documents/Data/KCHData/ClusteringData/CohortClusteredBaseline.csv")
+    write.csv(patient.data, file = "/Users/babylon/Documents/Data/KCHData/ClusteringData/ClusteredDataBaseline.csv")

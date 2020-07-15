@@ -1,11 +1,7 @@
 library('kohonen')
-library('Hmisc')
-library('yarrr') ####the pirate library for colours and more
-    ###### play with colors here: https://cran.r-project.org/web/package/yarrr/vignettes/piratepal.html
-    ###### my.cols <- piratepal(palette = "evildead",trans = .5)
 
 rm(list=ls())
-load(file="/Users/babylon/Documents/Data/KCHData/SOMClusteringBaseline.RData")
+load(file="/Users/babylon/Documents/Data/KCHData/ClusteringData/SOMClusteringBaseline.RData")
 
 clusters = list()
 clusters[[1]] = som_clusters
@@ -16,7 +12,7 @@ rainbowPalette <- function(n, alpha = 1) { rainbow(n,  alpha=alpha)[n:1] }
 i = 1
 k=max(unique(som_clusters))
 
-pdf("/Users/babylon/Documents/Covid/Figures/ClusteringBaseline/AllFeatures.pdf")
+pdf("/Users/babylon/Documents/Covid/Figures/Clustering/Baseline/AllFeatures.pdf")
 
 layout(matrix(c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16),4,4,  byrow = TRUE))##,	widths=c(3,3,3,3))
 
@@ -31,6 +27,15 @@ plot(knox.som, type = "property", property=Age.unscaled$Value,main="",palette.na
 title("Total Age", line=1)
 add.cluster.boundaries(knox.som, clusters[[i]],lwd=5)
 
+NumComorbidities.unscaled <- aggregate(as.numeric(patient.data$NumComorbidities), by=list(knox.som$unit.classif), FUN=mean, simplify=TRUE)
+names(NumComorbidities.unscaled) <- c("Node", "Value")
+missingNodes <- which(!(seq(1,nrow(knox.som$codes[[1]])) %in% NumComorbidities.unscaled$Node))
+names(NumComorbidities.unscaled) = names(data.frame(Node=missingNodes, Value=NA))
+NumComorbidities.unscaled<- rbind(NumComorbidities.unscaled, data.frame(Node=missingNodes, Value=NA))
+NumComorbidities.unscaled <- NumComorbidities.unscaled[order(NumComorbidities.unscaled$Node),]
+plot(knox.som, type = "property", property=NumComorbidities.unscaled$Value,main="",palette.name=myPalette, heatkeywidth = 0.9)
+title("Total NumComorbidities", line=1)
+add.cluster.boundaries(knox.som, clusters[[i]],lwd=5)
 
 Creatinine.unscaled <- aggregate(as.numeric(patient.data$CreatinineUnscaled), by=list(knox.som$unit.classif), FUN=mean, simplify=TRUE)
 names(Creatinine.unscaled) <- c("Node", "Value")
@@ -67,7 +72,7 @@ title("Total HeartRate", line=1)
 add.cluster.boundaries(knox.som, clusters[[i]],lwd=5)
 
 
-SupplementalOxygen.unscaled <- aggregate(as.numeric(patient.data$SupplementalOxygenUnscaled), by=list(knox.som$unit.classif), FUN=mean, simplify=TRUE)
+SupplementalOxygen.unscaled <- aggregate(as.numeric(patient.data$SupplementalOxygen), by=list(knox.som$unit.classif), FUN=mean, simplify=TRUE)
 names(SupplementalOxygen.unscaled) <- c("Node", "Value")
 missingNodes <- which(!(seq(1,nrow(knox.som$codes[[1]])) %in% SupplementalOxygen.unscaled$Node))
 names(SupplementalOxygen.unscaled) = names(data.frame(Node=missingNodes, Value=NA))
@@ -182,7 +187,7 @@ title("Total PLT", line=1)
 add.cluster.boundaries(knox.som, clusters[[i]],lwd=5)
 
 
-GCSVerbal.unscaled <- aggregate(as.numeric(patient.data$GCSVerbalUnscaled), by=list(knox.som$unit.classif), FUN=mean, simplify=TRUE)
+GCSVerbal.unscaled <- aggregate(as.numeric(patient.data$GCSVerbal), by=list(knox.som$unit.classif), FUN=mean, simplify=TRUE)
 names(GCSVerbal.unscaled) <- c("Node", "Value")
 missingNodes <- which(!(seq(1,nrow(knox.som$codes[[1]])) %in% GCSVerbal.unscaled$Node))
 names(GCSVerbal.unscaled) = names(data.frame(Node=missingNodes, Value=NA))
