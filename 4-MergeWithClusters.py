@@ -33,6 +33,12 @@ def main():
     timeseries_clustered_baseline.to_csv(clustered_timeseries_path +"TimeSeriesAggregatedClusteredBaseline.csv", index=False)
 
 
+    clustered_cohort_deltatwodays = pd.read_csv(clustering_path + "ClusteredDataFirst2Days.csv")
+    clustered_cohort_deltatwodays = clustered_cohort_deltatwodays[['PatientID', 'cluster_assignment']]
+    timeseries_clustered_deltatwodays= pd.merge(timeseries, clustered_cohort_deltatwodays, on=['PatientID'])
+    timeseries_clustered_deltatwodays.to_csv(clustered_timeseries_path +"TimeSeriesAggregatedClusteredDeltaTwoDays.csv", index=False)
+
+
 
 if __name__ == '__main__' :
     main()

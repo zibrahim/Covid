@@ -68,6 +68,7 @@ def run_xgboost_classifier(X,y, label, groups, experiment_number):
                            subsample=1,
                            eval_metric='error')
 
+    y = y.astype(int)
     distrs = [get_distribution(y)]
     index = ['Entire set']
 

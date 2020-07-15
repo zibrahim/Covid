@@ -18,10 +18,31 @@ class ExperimentIV:
                             'Urea', 'WBC', 'cHCO3', 'NumComorbidities', 'cluster_assignment']
 
         experiment_number = "4"
-        y = time_series['ITUAdmission']
+        outcome_label = "Mortality7Days"
+        y = time_series['Mortality7Days']
         X = time_series[dynamic_features]
         X.reset_index()
         groups = np.array(time_series['PatientID'])
-        run_xgboost_classifier(X,y, groups, experiment_number)
+        run_xgboost_classifier(X, y, outcome_label, groups, experiment_number)
+
+        outcome_label = "ITUAdmission7Days"
+        y = time_series['ITUAdmission7Days']
+        run_xgboost_classifier(X, y, outcome_label, groups, experiment_number)
+
+        outcome_label = "Mortality14Days"
+        y = time_series['Mortality14Days']
+        run_xgboost_classifier(X, y, outcome_label, groups, experiment_number)
+
+        outcome_label = "ITUAdmission14Days"
+        y = time_series['ITUAdmission14Days']
+        run_xgboost_classifier(X, y, outcome_label, groups, experiment_number)
+
+        outcome_label = "Mortality30Days"
+        y = time_series['Mortality30Days']
+        run_xgboost_classifier(X, y, outcome_label, groups, experiment_number)
+
+        outcome_label = "ITUAdmission30Days"
+        y = time_series['ITUAdmission30Days']
+        run_xgboost_classifier(X, y, outcome_label, groups, experiment_number)
 
 

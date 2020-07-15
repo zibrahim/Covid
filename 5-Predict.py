@@ -14,6 +14,7 @@ def main():
     time_series_clustered_demographics = pd.read_csv(clustered_timeseries_path +"TimeSeriesAggregatedClustered.csv")
     time_series_clustered_demographics_not_old = pd.read_csv(clustered_timeseries_path+"TimeSeriesAggregatedClusteredNotOld.csv")
     time_series_clustered_baseline = pd.read_csv(clustered_timeseries_path+"TimeSeriesAggregatedClusteredBaseline.csv")
+    time_series_clustered_twodays = pd.read_csv(clustered_timeseries_path+"TimeSeriesAggregatedClusteredDeltaTwoDays.csv")
 
 
     dynamic_features = ['Hour','ALT', 'Albumin', 'Anticoagulant clinic INR', 'Bicarbonate',
@@ -43,8 +44,7 @@ def main():
     ExperimentI(time_series_clustered_demographics)
     ExperimentII(time_series_clustered_demographics_not_old)
     ExperimentIII(time_series_clustered_baseline)
-    #ExperimentIII(time_series_clustered_not_old)
-    #ExperimentIV(time_series_clustered_baseline)
+    ExperimentIV(time_series_clustered_twodays)
     #ExperimentV(x,y,xgbm,rfm,lrm)
     #ExperimentVI(x,y,xgbm,rfm,lrm)
     #ExperimentVII(xgbm,rfm,lrm)
