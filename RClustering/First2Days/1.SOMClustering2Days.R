@@ -23,10 +23,6 @@ Modes <- function(x) {
 
 ################################1. Read data file
 patient.data = read.csv(file='/Users/babylon/Documents/Data/KCHData/ClusteringData/BaselineAndDeltaObs.csv')
-patient.data[,"SymptomsToAdmission"] <- as.numeric(substr(patient.data[,"SxToAdmit"], 1, regexpr(' day',patient.data[,"SxToAdmit"])))
-
-#patient.data<-patient.data[!(patient.data$PatientID=='p_50'),]
-#patient.data<-patient.data[patient.data$SymptomsToAdmission>= 0 ,]
 
 
 colnames(patient.data) = make.names(names(patient.data))
@@ -198,4 +194,4 @@ knox.som = kohonen::supersom(clustering.data,grid = som_grid, rlen=1000,alpha=c(
     #############Save Image for plotting later on
     save.image(file="/Users/babylon/Documents/Data/KCHData/ClusteringData/SOMClusteringFirst2Days.RData")
 
-    write.csv(patient.data, file = "/Users/babylon/Documents/Data/KCHData/ClusteringData/ClusteredDataFirst2Days.csv")
+    write.csv(patient.data, file = "/Users/babylon/Documents/Data/KCHData/ClusteringData/ClusteredDataFirst2Days.csv", row.names=FALSE)

@@ -1,5 +1,7 @@
 import re
 from bisect import bisect_left
+import datetime as dt
+
 
 def getDayWrapper(some_timedelta):
     return getDay(str(some_timedelta))
@@ -41,3 +43,16 @@ def getMinute( ox ):
        return all_tokens[2]
    else :
        return all_tokens[1]
+
+
+class Timer():
+
+	def __init__(self):
+		self.start_dt = None
+
+	def start(self):
+		self.start_dt = dt.datetime.now()
+
+	def stop(self):
+		end_dt = dt.datetime.now()
+		print('Time taken: %s' % (end_dt - self.start_dt))

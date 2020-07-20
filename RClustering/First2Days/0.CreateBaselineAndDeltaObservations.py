@@ -4,7 +4,7 @@ from sklearn.impute import IterativeImputer
 
 from Processing.CleanTimeSeries import remove_alpha
 from Processing.Settings import data_path, clustering_path
-
+from Processing.Utils import getDay
 
 def main():
     #Vitals:
@@ -14,6 +14,8 @@ def main():
     # 'WBC', 'Lymphocytes', 'Neutrophils', 'Platelets', 'Urea', 'Creatinine', 'C-Reactive-Protein', 'Hb', 'Albumin'
 
     time_series = pd.read_csv(data_path+"TimeSeries.csv")
+    time_series['SxToAdmit'] = [getDay(x) for x in time_series['SxToAdmit']]
+
     time_series = time_series[time_series.Hour > -24]
     time_series = time_series[time_series.Hour <= 48]
 
@@ -71,8 +73,12 @@ def main():
                                           'ITUAdmission7Days','ITUAdmission14Days', 'ITUAdmission30Days',
                                           'Mortality7Days', 'Mortality14Days', 'Mortality30Days',
                                           'NumComorbidities']]
+
     Obs = pd.merge(Obs, demographics_outcomes, on=['PatientID'])
 
+
+    Obs['PatientID2'] = Obs['PatientID']
+    Obs = Obs.groupby(['PatientID2']).first()
 
     Obs.to_csv(clustering_path+"BaselineAndDeltaObs.csv", index=False)
 if __name__ == "__main__" :

@@ -1,12 +1,15 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
 from sklearn.linear_model import LogisticRegression
-
+from MachineLearning.MLSetup import scale
 
 from MachineLearning.ExperimentI import ExperimentI
 from MachineLearning.ExperimentII import ExperimentII
 from MachineLearning.ExperimentIII import ExperimentIII
 from MachineLearning.ExperimentIV import ExperimentIV
+from MachineLearning.ExperimentV import ExperimentV
 
 from Processing.Settings import data_path, clustered_timeseries_path
 
@@ -15,6 +18,7 @@ def main():
     time_series_clustered_demographics_not_old = pd.read_csv(clustered_timeseries_path+"TimeSeriesAggregatedClusteredNotOld.csv")
     time_series_clustered_baseline = pd.read_csv(clustered_timeseries_path+"TimeSeriesAggregatedClusteredBaseline.csv")
     time_series_clustered_twodays = pd.read_csv(clustered_timeseries_path+"TimeSeriesAggregatedClusteredDeltaTwoDays.csv")
+    time_series = pd.read_csv(data_path+"TimeSeriesAggregated.csv")
 
 
     dynamic_features = ['Hour','ALT', 'Albumin', 'Anticoagulant clinic INR', 'Bicarbonate',
@@ -41,11 +45,27 @@ def main():
     lrm=LogisticRegression(solver='lbfgs')
 
 
-    ExperimentI(time_series_clustered_demographics)
-    ExperimentII(time_series_clustered_demographics_not_old)
-    ExperimentIII(time_series_clustered_baseline)
-    ExperimentIV(time_series_clustered_twodays)
-    #ExperimentV(x,y,xgbm,rfm,lrm)
+    #ExperimentI(time_series_clustered_demographics)
+    #ExperimentII(time_series_clustered_demographics_not_old)
+    #ExperimentIII(time_series_clustered_baseline)
+    #ExperimentIV(time_series_clustered_twodays)
+
+    dynamic_features = ['Hour', 'ALT', 'Albumin', 'Blood Lactate', 'C-Reactive-Protein',
+                        'Creatinine', 'D-Dimer',
+                        'DiasBP', 'Estimated-GFR', 'Ferritin', 'FiO2', 'GCSMotor', 'GCSVerbal',
+                        'Hb', 'HeartRate', 'INR',
+                        'Lymphocytes', 'NEWS2',
+                        'Neutrophils', 'OxygenLitres', 'OxygenSaturation',
+                        'PCO2', 'PCV', 'PH', 'PLT', 'PO2', 'PO2/FIO2', 'PainScore',
+                        'SupplementalOxygen', 'SysBP', 'Temperature', 'Troponin-T',
+                        'Urea', 'WBC', 'cHCO3']
+
+    imp = IterativeImputer(max_iter=10, random_state=0)
+    imp.fit(time_series[dynamic_features])
+    time_series[dynamic_features] = imp.transform(time_series[dynamic_features])
+
+    time_series = scale(time_series, dynamic_features)
+    ExperimentV(time_series)
     #ExperimentVI(x,y,xgbm,rfm,lrm)
     #ExperimentVII(xgbm,rfm,lrm)
     #ExperimentVIII(x,y,xgbm,rfm,lrm)

@@ -6,7 +6,7 @@ import pandas as pd
 from Cohort.Patient import Patient
 from Cohort.Observation import Observation
 from Processing.Serialisation import CohortEncoder
-from Processing.Helpers import BinSearch
+from Processing.Utils import BinSearch
 
 class Cohort :
     def __init__ ( self, cohort_df, IDField) :

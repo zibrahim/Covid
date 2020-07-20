@@ -1,7 +1,7 @@
 from Cohort.Cohort import Cohort
 from Cohort.Patient import Patient
 from Cohort.Observation import Observation
-from Processing.Helpers import getDayWrapper, getHourWrapper
+from Processing.Utils import getDayWrapper, getHourWrapper
 from Processing.Settings import data_path
 import json
 import numpy as np

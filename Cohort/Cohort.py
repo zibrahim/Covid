@@ -4,7 +4,7 @@ import pandas as pd
 
 from Cohort.Patient import Patient
 from Cohort.Observation import Observation
-from Processing.Helpers import binSearch
+from Processing.Utils import binSearch
 
 
 class Cohort :

@@ -26,16 +26,64 @@ def main():
     timeseries_clustered_demographics_notold = pd.merge(timeseries, clustered_cohort_demographics_notold, on=['PatientID'])
     timeseries_clustered_demographics_notold.to_csv(clustered_timeseries_path +"TimeSeriesAggregatedClusteredNotOld.csv", index=False)
 
-    #Clustering using baseline measurements for patients
-    clustered_cohort_baseline = pd.read_csv(clustering_path + "ClusteredDataBaseline.csv")
-    clustered_cohort_baseline = clustered_cohort_baseline[['PatientID', 'NumComorbidities', 'cluster_assignment']]
-    timeseries_clustered_baseline = pd.merge(timeseries, clustered_cohort_baseline, on=['PatientID'])
-    timeseries_clustered_baseline.to_csv(clustered_timeseries_path +"TimeSeriesAggregatedClusteredBaseline.csv", index=False)
-
-
     clustered_cohort_deltatwodays = pd.read_csv(clustering_path + "ClusteredDataFirst2Days.csv")
-    clustered_cohort_deltatwodays = clustered_cohort_deltatwodays[['PatientID', 'cluster_assignment']]
+    clustered_cohort_deltatwodays = clustered_cohort_deltatwodays[['PatientID',
+                                                                   'NEWSBaseline',
+                                                                   'CReactiveProteinBaseline',
+                                                                   'SysBPBaseline',
+                                                                   'DiasBPBaseline',
+                                                                   'WBCBaseline',
+                                                                   'LymphocytesBaseline',
+                                                                   'NeutrophilsBaseline',
+                                                                   'PLTBaseline',
+                                                                   'UreaBaseline',
+                                                                   'CreatinineBaseline',
+                                                                   'HbBaseline',
+                                                                   'AlbuminBaseline',
+                                                                   'Age',
+                                                                   'SxToAdmit',
+                                                                   'ITUAdmission7Days',
+                                                                   'ITUAdmission14Days',
+                                                                   'ITUAdmission30Days',
+                                                                   'Mortality7Days',
+                                                                   'Mortality14Days',
+                                                                   'Mortality30Days',
+                                                                   'NumComorbidities',
+                                                                   'cluster_assignment']]
+    timeseries = timeseries.drop(['OrdinalHour','FourHourIndex','ITUAdmission','ITUAdmission7Days',
+                     'ITUAdmission14Days','ITUAdmission30Days','Day','Mortality',
+                     'Mortality7Days','Mortality14Days','Mortality30Days','Age', 'SxToAdmit', 'NumComorbidities'], axis=1)
+
     timeseries_clustered_deltatwodays= pd.merge(timeseries, clustered_cohort_deltatwodays, on=['PatientID'])
+
+    cols = list(timeseries_clustered_deltatwodays)
+
+    cols.insert(2, cols.pop(cols.index('AlbuminBaseline')))
+    cols.insert(2, cols.pop(cols.index('HbBaseline')))
+    cols.insert(2, cols.pop(cols.index('PLTBaseline')))
+    cols.insert(2, cols.pop(cols.index('UreaBaseline')))
+    cols.insert(2, cols.pop(cols.index('CreatinineBaseline')))
+    cols.insert(2, cols.pop(cols.index('NeutrophilsBaseline')))
+    cols.insert(2, cols.pop(cols.index('LymphocytesBaseline')))
+    cols.insert(2, cols.pop(cols.index('WBCBaseline')))
+    cols.insert(2, cols.pop(cols.index('DiasBPBaseline')))
+    cols.insert(2, cols.pop(cols.index('SysBPBaseline')))
+    cols.insert(2, cols.pop(cols.index('CReactiveProteinBaseline')))
+    cols.insert(2, cols.pop(cols.index('NEWSBaseline')))
+    cols.insert(2, cols.pop(cols.index('cluster_assignment')))
+    cols.insert(2, cols.pop(cols.index('Age')))
+    cols.insert(2, cols.pop(cols.index('SxToAdmit')))
+    cols.insert(2, cols.pop(cols.index('NumComorbidities')))
+    cols.insert(1, cols.pop(cols.index('ITUAdmission7Days')))
+    cols.insert(1, cols.pop(cols.index('ITUAdmission14Days')))
+    cols.insert(1, cols.pop(cols.index('ITUAdmission30Days')))
+    cols.insert(1, cols.pop(cols.index('Mortality7Days')))
+    cols.insert(1, cols.pop(cols.index('Mortality14Days')))
+    cols.insert(1, cols.pop(cols.index('Mortality30Days')))
+
+    #timeseries_clustered_deltatwodays = timeseries_clustered_deltatwodays.ix[:, cols]
+    timeseries_clustered_deltatwodays  = timeseries_clustered_deltatwodays.loc[:, cols]
+
     timeseries_clustered_deltatwodays.to_csv(clustered_timeseries_path +"TimeSeriesAggregatedClusteredDeltaTwoDays.csv", index=False)
 
 

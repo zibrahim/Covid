@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 from Processing.Dictionaries import aggregation
-from Processing.Helpers import getDay
+from Processing.Utils import getDay
 from Processing.CleanTimeSeries import remove_alpha
 from Processing.CleanTimeSeries import merge_INR
 from Processing.Settings import data_path

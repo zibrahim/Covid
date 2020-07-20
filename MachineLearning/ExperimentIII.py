@@ -1,5 +1,5 @@
 import numpy as np
-from MachineLearning.ExperimentalDesign import run_xgboost_classifier
+from MachineLearning.XGBoost import run_xgboost_classifier
 
 
 class ExperimentIII:
