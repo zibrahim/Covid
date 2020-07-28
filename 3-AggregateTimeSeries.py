@@ -49,7 +49,12 @@ def main():
 
     new_time_series[["PatientID"]] = "p_"+new_time_series[["PatientID"]].astype(str)
 
-    int_columns = [ "Day", "Hour", 'ITUAdmission7Days', "ITUAdmission14Days", "ITUAdmission30Days", "Age", "Mortality7Days","Mortality14Days","Mortality30Days","NumComorbidities", "SxToAdmit","OrdinalHour", "FourHourIndex"]
+    int_columns = [ "Day", "Hour", 'ITUAdmission3Days', 'ITUAdmission5Days', 'ITUAdmission7Days',
+                    "ITUAdmission14Days", "ITUAdmission30Days", "Age",
+                    "Mortality3Days", "Mortality5Days",
+                    "Mortality7Days","Mortality14Days","Mortality30Days",
+                    "NumComorbidities", "SxToAdmit","OrdinalHour", "FourHourIndex"]
+
     new_time_series[int_columns] = new_time_series[int_columns].astype(int)
 
     na_columns = set(new_time_series.columns) - set(int_columns)

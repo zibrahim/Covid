@@ -51,7 +51,9 @@ def main():
 
 
         vitals_for_patient = vitals_data.loc[vitals_data['Patient_ID'] == idx]
-        vitals_for_patient.columns = ['DateTime','Temperature','OxygenSaturation','RespirationRate','SupplementalOxygen','OxygenDelivery','OxygenLitres','HeartRate','SysBP','DiasBP','PainScore','GCSEye','GCSVerbal','GCSMotor','NEWS2','DateTimeRaw','Patient_ID']
+        vitals_for_patient.columns = ['DateTime','Temperature','OxygenSaturation','RespirationRate','SupplementalOxygen',
+                                      'OxygenDelivery','OxygenLitres','HeartRate','SysBP','DiasBP','PainScore','GCSEye',
+                                      'GCSVerbal','GCSMotor','NEWS2','DateTimeRaw','Patient_ID']
 
         vitals_for_patient['DateTime'] = pd.to_datetime(vitals_for_patient['DateTime'])
         dateMask = (vitals_for_patient['DateTime'] >= startDate) & (vitals_for_patient['DateTime'] <= endDate)

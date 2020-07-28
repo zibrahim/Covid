@@ -12,12 +12,17 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 class Model() :
     """A class for an building and inferencing an lstm model"""
 
-    def __init__ ( self ) :
-        self.model = Sequential()
+    def __init__ ( self , model_name) :
+        self.model = Sequential(name = model_name)
 
     def load_model ( self, filepath ) :
         print('[Model] Loading model from file %s' % filepath)
         self.model = load_model(filepath)
+
+    def BuildModel (self, configs, sequence, rows, columns):
+
+        model = Sequential()
+        model.add(LSTM(sequence, return_sequences=True, input_shape=(rows, columns)))
 
     def build_model ( self, configs ) :
         timer = Timer()
@@ -28,6 +33,7 @@ class Model() :
             dropout_rate = layer['rate'] if 'rate' in layer else None
             activation = layer['activation'] if 'activation' in layer else None
             return_seq = layer['return_seq'] if 'return_seq' in layer else None
+
             input_timesteps = layer['input_timesteps'] if 'input_timesteps' in layer else None
             input_dim = layer['input_dim'] if 'input_dim' in layer else None
 

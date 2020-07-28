@@ -1,7 +1,7 @@
 import numpy as np
 
-from MachineLearning.LSTM import lstm_hyperparameter_tuning
-from MachineLearning.MLSetup import lstm_dict
+from MachineLearning.Models.LSTM import lstm_hyperparameter_tuning
+
 
 #LSTM EXPERIMENT
 class ExperimentV:

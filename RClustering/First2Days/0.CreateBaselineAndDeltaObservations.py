@@ -23,28 +23,37 @@ def main():
 
     time_series['PatientID2'] = time_series['PatientID']
 
-    ObsFirst = time_series[['PatientID', 'PatientID2', 'NEWS2', 'C-Reactive-Protein', 'SysBP', 'DiasBP','WBC','Lymphocytes','Neutrophils','PLT','Urea','Creatinine','Hb','Albumin']].groupby('PatientID2').first()
+    ObsFirst = time_series[['PatientID', 'PatientID2', 'NEWS2', 'C-Reactive-Protein', 'SysBP', 'DiasBP','WBC',
+                            'Lymphocytes','Neutrophils','PLT','Urea','Creatinine','Hb',
+                            'Albumin', 'FiO2',  'PO2/FIO2']].groupby('PatientID2').first()
+
+
     ObsFirst[['NEWS2', 'C-Reactive-Protein', 'SysBP', 'DiasBP','WBC','Lymphocytes','Neutrophils','PLT',
-              'Urea','Creatinine','Hb','Albumin']]= ObsFirst[['NEWS2',
+              'Urea','Creatinine','Hb','Albumin', 'FiO2',  'PO2/FIO2']]= ObsFirst[['NEWS2',
                                                               'C-Reactive-Protein', 'SysBP', 'DiasBP',
                                                               'WBC','Lymphocytes','Neutrophils',
                                                               'PLT','Urea','Creatinine',
-                                                              'Hb','Albumin']].astype(float)
+                                                              'Hb','Albumin', 'FiO2',  'PO2/FIO2']].astype(float)
     ObsFirst.columns = ['PatientID', 'NEWSBaseline',  'CReactiveProteinBaseline', 'SysBPBaseline',
                         'DiasBPBaseline','WBCBaseline','LymphocytesBaseline','NeutrophilsBaseline',
-                        'PLTBaseline', 'UreaBaseline', 'CreatinineBaseline', 'HbBaseline', 'AlbuminBaseline']
+                        'PLTBaseline', 'UreaBaseline', 'CreatinineBaseline', 'HbBaseline',
+                        'AlbuminBaseline', 'FiO2Baseline',  'PO2/FIO2Baseline']
 
-    ObsLast = time_series[['PatientID', 'PatientID2', 'NEWS2', 'C-Reactive-Protein', 'SysBP', 'DiasBP', 'WBC', 'Lymphocytes','Neutrophils', 'PLT', 'Urea', 'Creatinine', 'Hb', 'Albumin']].groupby('PatientID2').last()
+    ObsLast = time_series[['PatientID', 'PatientID2', 'NEWS2', 'C-Reactive-Protein', 'SysBP',
+                           'DiasBP', 'WBC', 'Lymphocytes','Neutrophils', 'PLT', 'Urea',
+                           'Creatinine', 'Hb', 'Albumin', 'FiO2',  'PO2/FIO2']].groupby('PatientID2').last()
 
     ObsLast[['NEWS2', 'C-Reactive-Protein', 'SysBP', 'DiasBP', 'WBC', 'Lymphocytes', 'Neutrophils',
-                 'PLT','Urea', 'Creatinine', 'Hb', 'Albumin']]= ObsLast[['NEWS2', 'C-Reactive-Protein',
+                 'PLT','Urea', 'Creatinine', 'Hb', 'Albumin', 'FiO2',  'PO2/FIO2']]= ObsLast[['NEWS2',
+                                                                        'C-Reactive-Protein',
                                                                          'SysBP', 'DiasBP', 'WBC',
                                                                          'Lymphocytes', 'Neutrophils', 'PLT',
                                                                          'Urea','Creatinine',
-                                                                         'Hb', 'Albumin']].astype(float)
+                                                                         'Hb', 'Albumin',
+                                                                        'FiO2',  'PO2/FIO2']].astype(float)
     ObsLast.columns = ['PatientID', 'NEWSLast', 'CReactiveProteinLast', 'SysBPLast', 'DiasBPLast', 'WBCLast',
                        'LymphocytesLast', 'NeutrophilsLast', 'PLTLast', 'UreaLast', 'CreatinineLast',
-                       'HbLast', 'AlbuminLast']
+                       'HbLast', 'AlbuminLast', 'FiO2Last',  'PO2/FIO2Last']
 
     Obs = pd.merge(ObsFirst, ObsLast, on=['PatientID'])
     Obs['DeltaNEWS'] = Obs['NEWSLast'] - Obs['NEWSBaseline']
@@ -59,6 +68,8 @@ def main():
     Obs['DeltaCreatinine'] = Obs['CreatinineLast'] - Obs['CreatinineBaseline']
     Obs['DeltaHb'] = Obs['HbLast'] - Obs['HbBaseline']
     Obs['DeltaAlbumin'] = Obs['AlbuminLast'] - Obs['AlbuminBaseline']
+    Obs['DeltaFiO2'] = Obs['FiO2Last'] - Obs['FiO2Baseline']
+    Obs['DeltaPO2/FIO2'] = Obs['PO2/FIO2Last'] - Obs['PO2/FIO2Baseline']
 
     #missingness = (aggregate_series.isnull().sum() * 100 /len(aggregate_series))
     Obs.reindex(Obs.columns)
@@ -70,8 +81,12 @@ def main():
     Obs.iloc[:,7:] = imp.transform(Obs.iloc[:,7:])
 
     demographics_outcomes  = time_series[['PatientID', 'Age', 'SxToAdmit',
-                                          'ITUAdmission7Days','ITUAdmission14Days', 'ITUAdmission30Days',
-                                          'Mortality7Days', 'Mortality14Days', 'Mortality30Days',
+                                          'ITUAdmission3Days', 'ITUAdmission5Days',
+                                          'ITUAdmission7Days','ITUAdmission14Days',
+                                          'ITUAdmission30Days',
+                                          'Mortality3Days', 'Mortality5Days',
+                                          'Mortality7Days', 'Mortality14Days',
+                                          'Mortality30Days',
                                           'NumComorbidities']]
 
     Obs = pd.merge(Obs, demographics_outcomes, on=['PatientID'])

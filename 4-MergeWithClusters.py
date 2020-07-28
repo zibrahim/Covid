@@ -16,13 +16,19 @@ def main():
     #Clustering based on demographics
     timeseries = pd.read_csv(data_path + "TimeSeriesAggregated.csv")
     clustered_cohort_demographics = pd.read_csv(clustering_path + "ClusteredDataDemographics.csv")
-    clustered_cohort_demographics = clustered_cohort_demographics[['PatientID', 'NumComorbiditiesUnscaled', 'cluster_assignment']]
-    timeseries_clustered_demographics = pd.merge(timeseries, clustered_cohort_demographics, on=['PatientID'])
-    timeseries_clustered_demographics.to_csv(clustered_timeseries_path +"TimeSeriesAggregatedClustered.csv", index=False)
+    clustered_cohort_demographics = clustered_cohort_demographics[['PatientID',
+                                                                   'NumComorbiditiesUnscaled',
+                                                                   'cluster_assignment']]
+    timeseries_clustered_demographics = pd.merge(timeseries, clustered_cohort_demographics,
+                                                 on=['PatientID'])
+    timeseries_clustered_demographics.to_csv(clustered_timeseries_path
+                                             +"TimeSeriesAggregatedClustered.csv", index=False)
 
     #Clustering based on demographics only <= 75 years of age
     clustered_cohort_demographics_notold = pd.read_csv(clustering_path + "ClusteredDataDemographicsNotOld.csv")
-    clustered_cohort_demographics_notold = clustered_cohort_demographics_notold[['PatientID', 'NumComorbidities', 'cluster_assignment']]
+    clustered_cohort_demographics_notold = clustered_cohort_demographics_notold[['PatientID',
+                                                                                 'NumComorbidities',
+                                                                                 'cluster_assignment']]
     timeseries_clustered_demographics_notold = pd.merge(timeseries, clustered_cohort_demographics_notold, on=['PatientID'])
     timeseries_clustered_demographics_notold.to_csv(clustered_timeseries_path +"TimeSeriesAggregatedClusteredNotOld.csv", index=False)
 
@@ -40,24 +46,34 @@ def main():
                                                                    'CreatinineBaseline',
                                                                    'HbBaseline',
                                                                    'AlbuminBaseline',
+                                                                   'FiO2Baseline',
+                                                                   'PO2.FIO2Baseline',
                                                                    'Age',
                                                                    'SxToAdmit',
+                                                                   'ITUAdmission3Days',
+                                                                   'ITUAdmission5Days',
                                                                    'ITUAdmission7Days',
                                                                    'ITUAdmission14Days',
                                                                    'ITUAdmission30Days',
+                                                                   'Mortality3Days',
+                                                                   'Mortality5Days',
                                                                    'Mortality7Days',
                                                                    'Mortality14Days',
                                                                    'Mortality30Days',
                                                                    'NumComorbidities',
                                                                    'cluster_assignment']]
-    timeseries = timeseries.drop(['OrdinalHour','FourHourIndex','ITUAdmission','ITUAdmission7Days',
+    timeseries = timeseries.drop(['OrdinalHour','FourHourIndex','ITUAdmission','ITUAdmission3Days',
+                                  'ITUAdmission5Days', 'ITUAdmission7Days',
                      'ITUAdmission14Days','ITUAdmission30Days','Day','Mortality',
+                    'Mortality3Days', 'Mortality5Days',
                      'Mortality7Days','Mortality14Days','Mortality30Days','Age', 'SxToAdmit', 'NumComorbidities'], axis=1)
 
     timeseries_clustered_deltatwodays= pd.merge(timeseries, clustered_cohort_deltatwodays, on=['PatientID'])
 
     cols = list(timeseries_clustered_deltatwodays)
 
+    cols.insert(2, cols.pop(cols.index('PO2.FIO2Baseline')))
+    cols.insert(2, cols.pop(cols.index('FiO2Baseline')))
     cols.insert(2, cols.pop(cols.index('AlbuminBaseline')))
     cols.insert(2, cols.pop(cols.index('HbBaseline')))
     cols.insert(2, cols.pop(cols.index('PLTBaseline')))
@@ -74,12 +90,17 @@ def main():
     cols.insert(2, cols.pop(cols.index('Age')))
     cols.insert(2, cols.pop(cols.index('SxToAdmit')))
     cols.insert(2, cols.pop(cols.index('NumComorbidities')))
+    cols.insert(1, cols.pop(cols.index('ITUAdmission3Days')))
+    cols.insert(1, cols.pop(cols.index('ITUAdmission5Days')))
     cols.insert(1, cols.pop(cols.index('ITUAdmission7Days')))
     cols.insert(1, cols.pop(cols.index('ITUAdmission14Days')))
     cols.insert(1, cols.pop(cols.index('ITUAdmission30Days')))
+    cols.insert(1, cols.pop(cols.index('Mortality3Days')))
+    cols.insert(1, cols.pop(cols.index('Mortality5Days')))
     cols.insert(1, cols.pop(cols.index('Mortality7Days')))
     cols.insert(1, cols.pop(cols.index('Mortality14Days')))
     cols.insert(1, cols.pop(cols.index('Mortality30Days')))
+
 
     #timeseries_clustered_deltatwodays = timeseries_clustered_deltatwodays.ix[:, cols]
     timeseries_clustered_deltatwodays  = timeseries_clustered_deltatwodays.loc[:, cols]

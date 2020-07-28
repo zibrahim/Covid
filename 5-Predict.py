@@ -1,15 +1,10 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from sklearn.linear_model import LogisticRegression
 from MachineLearning.MLSetup import scale
 
-from MachineLearning.ExperimentI import ExperimentI
-from MachineLearning.ExperimentII import ExperimentII
-from MachineLearning.ExperimentIII import ExperimentIII
-from MachineLearning.ExperimentIV import ExperimentIV
-from MachineLearning.ExperimentV import ExperimentV
+from MachineLearning.Experiments.ExperimentV import ExperimentV
 
 from Processing.Settings import data_path, clustered_timeseries_path
 

@@ -1,12 +1,15 @@
 
 import os
 import json
-import time
-import math
+import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
-from MachineLearning.LSTM.DataGenerator import DataLoader
-from MachineLearning.LSTM.Model import Model
 
+from MachineLearning.Models.LSTM.Model import Model
+from Processing.Settings import clustered_timeseries_path
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
+from MachineLearning.MLSetup import scale, stratified_group_k_fold
 
 def plot_results(predicted_data, true_data):
     fig = plt.figure(facecolor='white')
@@ -28,60 +31,63 @@ def plot_results_multiple(predicted_data, true_data, prediction_len):
         plt.legend()
     plt.show()
 
-
 def main():
-    configs = json.load(open('MachineLearning/LSTM/Configuration.json', 'r'))
+    configs = json.load(open('MachineLearning/Models/LSTM/Configuration.json', 'r'))
     if not os.path.exists(configs['model']['save_dir']): os.makedirs(configs['model']['save_dir'])
 
+    time_series= pd.read_csv(clustered_timeseries_path+"TimeSeriesAggregatedClusteredDeltaTwoDays.csv")
+    print(time_series.shape)
+       # configs['data']['train_test_split'],  #the split
+        #configs['data']['columns_dynamic'] # the columns
 
-    data = DataLoader(
-        os.path.join('data', configs['data']['filename']),
-        configs['data']['train_test_split'],
-        configs['data']['columns']
-    )
+    #Impute and Scale Data
 
-    model = Model()
-    model.build_model(configs)
-    x, y = data.get_train_data(
-        seq_len=configs['data']['sequence_length'],
-        normalise=configs['data']['normalise']
-    )
 
-    '''
-	# in-memory training
-	model.train(
-		x,
-		y,
-		epochs = configs['training']['epochs'],
-		batch_size = configs['training']['batch_size'],
-		save_dir = configs['model']['save_dir']
-	)
-	'''
-    # out-of memory generative training
-    steps_per_epoch = math.ceil((data.len_train - configs['data']['sequence_length']) / configs['training']['batch_size'])
-    model.train_generator(
-        data_gen=data.generate_train_batch(
-            seq_len=configs['data']['sequence_length'],
-            batch_size=configs['training']['batch_size'],
-            normalise=configs['data']['normalise']
-        ),
-        epochs=configs['training']['epochs'],
-        batch_size=configs['training']['batch_size'],
-        steps_per_epoch=steps_per_epoch,
-        save_dir=configs['model']['save_dir']
-    )
+    dynamic_features = configs['data']['dynamic_columns']
+    grouping = configs['data']['grouping']
+    imp = IterativeImputer(max_iter=10, random_state=0)
+    imp.fit(time_series[dynamic_features])
+    time_series[dynamic_features] = imp.transform(time_series[dynamic_features])
+    time_series = scale(time_series, dynamic_features)
 
-    x_test, y_test = data.get_test_data(
-        seq_len=configs['data']['sequence_length'],
-        normalise=configs['data']['normalise']
-    )
+    X = time_series[dynamic_features]
+    groups = np.array(time_series[grouping])
 
-    predictions = model.predict_sequences_multiple(x_test, configs['data']['sequence_length'], configs['data']['sequence_length'])
-    # predictions = model.predict_sequence_full(x_test, configs['data']['sequence_length'])
-    # predictions = model.predict_point_by_point(x_test)
+    for outcome in configs['data']['classification_outcome']:
+        y = time_series[outcome]
+        y = y.astype(int)
 
-    plot_results_multiple(predictions, y_test, configs['data']['sequence_length'])
-    # plot_results(predictions, y_test)
+        model = Model(configs['model']['name'] + outcome)
+
+        print(grouping)
+        print(len(set(time_series[grouping])))
+
+        model.build_model(configs)
+
+        i = 0
+        for ffold_ind, (training_ind, testing_ind) in enumerate(
+                stratified_group_k_fold(X, y, groups, k=10)) :  # CROSS-VALIDATION
+            training_groups, testing_groups = groups[training_ind], groups[testing_ind]
+            this_y_train, this_y_val = y[training_ind], y[testing_ind]
+            this_X_train, this_X_val = X.iloc[training_ind], X.iloc[testing_ind]
+
+            assert len(set(training_groups) & set(testing_groups)) == 0
+
+            print(" X SHAPE: ", this_X_train.shape)
+            print(" Y shape: ", this_y_train.shape)
+
+
+            input_timesteps = 24
+            input_dim = 2
+
+            if i == 0:
+                #(NumberOfExamples, TimeSteps, FeaturesPerStep).
+                model.train(
+                    (this_X_train.values).reshape(-1, 24, 35),
+                    (this_y_train.values).reshape(-1,24,1))
+                i = i +1
+
+
 
 if __name__ == '__main__':
     main()

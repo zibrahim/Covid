@@ -92,19 +92,21 @@ def makeTimeSeries( cohort ):
 
             #Subset observations to include days -1 to 2
             observation_df = observation_df.loc[observation_df.Day >=-1]
-            observation_df = observation_df.loc[observation_df.Day <= 1]
+            observation_df = observation_df.loc[observation_df.Day <= 2]
 
-            days = pd.Series([-1,0,1])
+            days = pd.Series([-1,0,1,2])
 
             PatientDF['Day'] = days.repeat(24)
 
             PatientDF.loc[PatientDF.Day == -1, "Hour"] = range(-24,0)
             PatientDF.loc[PatientDF.Day == 0, "Hour"] = range(0,24)
             PatientDF.loc[PatientDF.Day == 1, "Hour"] = range(24,48)
+            PatientDF.loc[PatientDF.Day == 2, "Hour"] = range(48,72)
 
             PatientDF.loc[PatientDF.Day == -1, "OrdinalHour"] = range(0,24)
             PatientDF.loc[PatientDF.Day == 0, "OrdinalHour"] = range(0,24)
             PatientDF.loc[PatientDF.Day == 1, "OrdinalHour"] = range(0,24)
+            PatientDF.loc[PatientDF.Day == 2, "OrdinalHour"] = range(0,24)
 
             PatientDF['PatientID'] = ind.Patient_id
             PatientDF['Age'] = ind.Age
@@ -121,16 +123,6 @@ def makeTimeSeries( cohort ):
             if (not pd.isnull(ind.ITUDate)) :
                 ITUDate = datetime.strptime(ind.ITUDate, '%Y-%m-%d')
                 ITURange = ITUDate  - AdmitDate
-
-            if ((not (pd.isnull(ind.ITUDate))) and (ITURange <= timedelta(days=3))) :
-                PatientDF['ITUAdmission3Days'] = 1
-            else:
-                PatientDF['ITUAdmission3Days'] = 0
-
-            if ((not (pd.isnull(ind.ITUDate))) and (ITURange <= timedelta(days=5))) :
-                PatientDF['ITUAdmission5Days'] = 1
-            else:
-                PatientDF['ITUAdmission5Days'] = 0
 
 
             if ((not (pd.isnull(ind.ITUDate))) and (ITURange <= timedelta(days=7))) :
@@ -154,16 +146,6 @@ def makeTimeSeries( cohort ):
                 DeathDate = datetime.strptime(ind.DeathDate, '%Y-%m-%d')
                 deathRange = DeathDate - AdmitDate
 
-            if ((not (pd.isnull(ind.DeathDate))) and (deathRange <= timedelta(days=3))) :
-                PatientDF['Mortality3Days'] = 1
-            else:
-                PatientDF['Mortality3Days'] = 0
-
-            if ((not (pd.isnull(ind.DeathDate))) and (deathRange <= timedelta(days=5))) :
-                PatientDF['Mortality5Days'] = 1
-            else :
-                PatientDF['Mortality5Days'] = 0
-
             if ((not (pd.isnull(ind.DeathDate))) and (deathRange <= timedelta(days=7))) :
                 PatientDF['Mortality7Days'] = 1
             else:
@@ -184,6 +166,7 @@ def makeTimeSeries( cohort ):
             for index, row in observation_df.iterrows() :
                 ob_name = row['ObservationName']
                 ob_value = row['ObservationValue']
+                ob_time = row['ObservationOrdinalTime']
                 ob_hour = row['Hour']
                 ob_day = row['Day']
 

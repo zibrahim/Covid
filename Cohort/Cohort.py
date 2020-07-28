@@ -223,8 +223,18 @@ class Cohort :
         all_column_names = np.insert(all_column_names, 0,"SxToAdmit")
         all_column_names = np.insert(all_column_names, 0,"NumComorbidities")
 
+        all_column_names = np.insert(all_column_names, 0,"Mortality3Days")
+        all_column_names = np.insert(all_column_names, 0,"Mortality5Days")
+        all_column_names = np.insert(all_column_names, 0,"Mortality7Days")
+        all_column_names = np.insert(all_column_names, 0,"Mortality14Days")
         all_column_names = np.insert(all_column_names, 0,"Mortality30Days")
         all_column_names = np.insert(all_column_names, 0,"Mortality")
+        all_column_names = np.insert(all_column_names, 0,"ITUAdmission3Days")
+        all_column_names = np.insert(all_column_names, 0,"ITUAdmission5Days")
+        all_column_names = np.insert(all_column_names, 0,"ITUAdmission7Days")
+        all_column_names = np.insert(all_column_names, 0,"ITUAdmission14Days")
+        all_column_names = np.insert(all_column_names, 0,"ITUAdmission30Days")
+
         all_column_names = np.insert(all_column_names, 0,"ITUAdmission")
         all_column_names = np.insert(all_column_names, 0,"Hour")
         all_column_names = np.insert(all_column_names, 0,"Age")
